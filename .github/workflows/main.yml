@@ -33,14 +33,22 @@ jobs:
         run: |
           chmod +x android/gradlew
 
+      - name: Fix Android Gradle Plugin
+        run: |
+          sed -i 's/com.android.application.*version "[0-9.]*"/com.android.application version "8.12.2"/' android/settings.gradle.kts
+
       - name: Fix Android Gradle DSL
         run: |
           echo "android.newDsl=false" >> android/gradle.properties
 
-      - name: Check Gradle version
+      - name: Check Gradle and AGP
         run: |
+          echo "=== Gradle ==="
           cd android
           ./gradlew --version
+          echo "=== AGP ==="
+          grep -n "com.android.application" settings.gradle.kts || true
+          cd ..
 
       - name: Install dependencies
         run: flutter pub get
