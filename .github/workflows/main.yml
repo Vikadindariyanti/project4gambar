@@ -19,6 +19,25 @@ jobs:
         with:
           channel: stable
 
+      - name: Fix Gradle
+        run: |
+          cat > android/gradle/wrapper/gradle-wrapper.properties <<'EOF'
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.14-bin.zip
+          EOF
+
+      - name: Fix Android Gradle DSL
+        run: |
+          echo "android.newDsl=false" >> android/gradle.properties
+
+      - name: Check Gradle version
+        run: |
+          cd android
+          ./gradlew --version
+
       - name: Install dependencies
         run: flutter pub get
 
